@@ -2,8 +2,11 @@ import * as vscode from 'vscode';
 
 
 import axios from 'axios'
-
-export async function callOpenAI(text: string): Promise<string | undefined> {
+interface OpenAIResponse {
+    role: string;
+    content: string;
+}
+export async function callOpenAI(text: string): Promise<OpenAIResponse | undefined> {
     const token = vscode.workspace.getConfiguration('UsefulCode').token;
     if(!token) {
         vscode.window.showErrorMessage('请先设置OpenAI的Token');

@@ -1,5 +1,21 @@
 # UsefulCode
 
+<p align="center">
+  <img width="320" src="https://yhyblog-2023-2-8.oss-cn-hangzhou.aliyuncs.com/project/icon/icon.png">
+</p>
+
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/vscode">
+    <img src="https://img.shields.io/badge/vscode-1.78.0-brightgreen.svg" alt="vue">
+  </a>
+  <a href="https://marketplace.visualstudio.com/items?itemName=yhy.UsefulCode">
+    <img src="https://img.shields.io/badge/UsefulCode-0.0.3-orange.svg" alt="vue">
+  </a>
+  <a href="https://openai.com/">
+    <img src="https://img.shields.io/badge/ChatCPT-3.5.turbo-blue.svg" alt="vue">
+  </a>
+</p>
+
 一个vscode插件，自用为主，使用ChatGPT进行增加自己开发速度和效率
 
 ## Extension Settings

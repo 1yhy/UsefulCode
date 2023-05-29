@@ -94,7 +94,8 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
 				// vscode.window.showInformationMessage();
 				// 处理收到的消息
 				if(res) {
-					const responseMessage = `${res}`;
+					console.log(res);
+					const responseMessage = `${res.content}`;
 					// 发送响应消息给 Webview
 					webviewView?.webview.postMessage({ type: 'response', value: responseMessage });
 				}
