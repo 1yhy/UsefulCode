@@ -1,0 +1,136 @@
+{
+  "name": "UsefulCode",
+  "displayName": "UsefulCode",
+  "description": "Use the ChatGPT to Create more UsefulCode in our project",
+  "version": "0.0.1",
+  "author": {
+    "name": "yhy",
+    "email": "a319139806@163.com"
+  },
+  "publisher": "yhy",
+  "engines": {
+    "vscode": "^1.78.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "UsefulCode.InputToken",
+        "title": "InputToken"
+      },
+      {
+        "command": "UsefulCode.FindProblemsOfCode",
+        "title": "查看代码是否存在问题"
+      },
+      {
+        "command": "UsefulCode.OptimizeCode",
+        "title": "优化代码"
+      },
+      {
+        "command": "UsefulCode.ExplainCode",
+        "title": "解释代码"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "UsefulCode.FindProblemsOfCode",
+        "key": "ctrl+alt+f",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "UsefulCode.OptimizeCode",
+        "key": "ctrl+alt+o",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "UsefulCode.ExplainCode",
+        "key": "ctrl+alt+e",
+        "when": "editorTextFocus"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "UsefulCode.FindProblemsOfCode",
+          "group": "askGroup@1",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "UsefulCode.OptimizeCode",
+          "group": "askGroup@1",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "UsefulCode.ExplainCode",
+          "group": "askGroup@1",
+          "when": "editorHasSelection"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "UsefulCode",
+      "properties": {
+        "UsefulCode.token": {
+          "type": "string",
+          "default": "",
+          "$comment": "输入OpenAI的token",
+          "description": "Enter your OpenAPI token."
+        }
+      }
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "useful_code_sidebar",
+          "title": "UsefulCode",
+          "icon": "./assets/icon.svg"
+        }
+      ],
+      "panel": [
+        {
+          "id": "useful_code_sidebar",
+          "title": "UsefulCode",
+          "icon": "./assets/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "useful_code_sidebar": [
+        {
+          "id": "useful_code_sidebar-view",
+          "name": "询问窗口",
+          "type": "webview",
+          "initialSize": 1
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "pnpm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "pnpm run compile && pnpm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
+    "@types/vscode": "^1.78.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "@vscode/test-electron": "^2.3.0",
+    "eslint": "^8.39.0",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
+    "typescript": "^5.0.4"
+  },
+  "dependencies": {
+    "axios": "^1.4.0"
+  }
+}
