@@ -1,6 +1,6 @@
 # UsefulCode
 
-This is a vscode plugin for us to make our code more quickly and efficiently by using the ChatGPT.
+一个vscode插件，自用为主，使用ChatGPT进行增加自己开发速度和效率
 
 ## Extension Settings
 
@@ -14,5 +14,5 @@ This is a vscode plugin for us to make our code more quickly and efficiently by 
 
 ### 1.0.0
 
-初始化项目-插件基本功能开发
+初始化项目-插件基本功能开发，包括提问，各种角色Prompt快捷使用，右键选择代码进行解释、查问题、和优化
 

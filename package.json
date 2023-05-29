@@ -2,20 +2,28 @@
   "name": "UsefulCode",
   "displayName": "UsefulCode",
   "description": "Use the ChatGPT to Create more UsefulCode in our project",
+  "displayName": "ChatGPT插件",
   "version": "0.0.1",
+  "publisher": "yhy",
+  "icon": "./assets/icon.png",
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "keywords": ["vscode", "plugin", "ChatGPT", "OpenAI", "UsefulCode"],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1yhy/UsefulCode.git"
+  },
   "author": {
     "name": "yhy",
     "email": "a319139806@163.com"
   },
-  "publisher": "yhy",
   "engines": {
     "vscode": "^1.78.0"
   },
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
-  "main": "./out/extension.js",
   "contributes": {
     "commands": [
       {
