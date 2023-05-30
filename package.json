@@ -1,14 +1,19 @@
 {
   "name": "UsefulCode",
-  "displayName": "UsefulCode",
-  "description": "Use the ChatGPT to Create more UsefulCode in our project",
   "displayName": "ChatGPT插件",
-  "version": "0.0.3",
+  "description": "Use the ChatGPT to Create more UsefulCode in our project",
+  "version": "0.0.4",
   "publisher": "yhy",
   "icon": "assets/icon.png",
-  "activationEvents": [],
+  "activationEvents": [ ],
   "main": "./out/extension.js",
-  "keywords": ["vscode", "plugin", "ChatGPT", "OpenAI", "UsefulCode"],
+  "keywords": [
+    "vscode",
+    "plugin",
+    "ChatGPT",
+    "OpenAI",
+    "UsefulCode"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -128,8 +133,8 @@
   "devDependencies": {
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
-    "@types/vscode": "^1.78.0",
     "@types/node": "16.x",
+    "@types/vscode": "^1.78.0",
     "@typescript-eslint/eslint-plugin": "^5.59.1",
     "@typescript-eslint/parser": "^5.59.1",
     "@vscode/test-electron": "^2.3.0",
@@ -139,6 +144,7 @@
     "typescript": "^5.0.4"
   },
   "dependencies": {
-    "axios": "^1.4.0"
+    "axios": "^1.4.0",
+    "gpt-3-encoder": "^1.1.4"
   }
 }
