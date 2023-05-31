@@ -5,14 +5,16 @@
   "version": "0.0.4",
   "publisher": "yhy",
   "icon": "assets/icon.png",
-  "activationEvents": [ ],
+  "activationEvents": [
+  ],
   "main": "./out/extension.js",
   "keywords": [
     "vscode",
     "plugin",
     "ChatGPT",
     "OpenAI",
-    "UsefulCode"
+    "UsefulCode",
+    "gpt3.5",
   ],
   "license": "MIT",
   "repository": {
@@ -52,16 +54,19 @@
       {
         "command": "UsefulCode.FindProblemsOfCode",
         "key": "ctrl+alt+f",
+        "mac": "cmd+alt+f",
         "when": "editorTextFocus"
       },
       {
         "command": "UsefulCode.OptimizeCode",
         "key": "ctrl+alt+o",
+        "mac": "cmd+alt+o",
         "when": "editorTextFocus"
       },
       {
         "command": "UsefulCode.ExplainCode",
         "key": "ctrl+alt+e",
+        "mac": "cmd+alt+e",
         "when": "editorTextFocus"
       }
     ],
@@ -97,13 +102,6 @@
     },
     "viewsContainers": {
       "activitybar": [
-        {
-          "id": "useful_code_sidebar",
-          "title": "UsefulCode",
-          "icon": "./assets/icon.svg"
-        }
-      ],
-      "panel": [
         {
           "id": "useful_code_sidebar",
           "title": "UsefulCode",

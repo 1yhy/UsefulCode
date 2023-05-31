@@ -10,12 +10,18 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// 注册 Webview 视图提供程序
 	context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider('useful_code_sidebar-view', provider)
+		vscode.window.registerWebviewViewProvider('useful_code_sidebar-view', provider,{
+			webviewOptions: {
+				retainContextWhenHidden: true,
+			},
+		})
 	);
+
 
 	// 右键菜单命令 -- 查看代码问题
 	context.subscriptions.push(
 		vscode.commands.registerCommand("UsefulCode.FindProblemsOfCode", async () => {
+			console.log('111');
 			const editor = vscode.window.activeTextEditor;
 			const selection = editor?.selection;
 			const text = editor?.document.getText(selection) || '';
@@ -75,7 +81,6 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
 
 	public resolveWebviewView(webviewView: vscode.WebviewView) {
 		this._view = webviewView;
-		console.log(webviewView.webview == this._view?.webview);
 
 		// 设置 Webview 的 HTML 内容
 		webviewView.webview.html = this.getWebviewContent(webviewView.webview);
@@ -101,11 +106,14 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
 				}
 			}
 		});
+
 	}
 
 	public postMessage(message: string) {
+		console.log(message, this._view);
 		// 处理 Webview 的消息和事件
 		if (this._view) {
+			if(!this._view.visible) this._view.show(true);
 			this._view.webview?.postMessage({ type: 'askQuestion', value: message });
 		}
 	}

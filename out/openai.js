@@ -2,12 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.callOpenAI = void 0;
 const vscode = require("vscode");
-var axios = ;
-{
-    AxiosError;
-}
-from;
-'axios';
+const axios_1 = require("axios");
 const gpt_3_encoder_1 = require("gpt-3-encoder");
 const messages = [];
 async function callOpenAI(text) {
@@ -29,7 +24,7 @@ async function callOpenAI(text) {
             messages.shift();
         }
         console.log(messages, encodedLength);
-        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+        const response = await axios_1.default.post('https://api.openai.com/v1/chat/completions', {
             model: "gpt-3.5-turbo",
             messages: messages,
             temperature: 0.2,

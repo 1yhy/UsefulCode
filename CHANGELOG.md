@@ -14,6 +14,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
   - 对话内容比较短时，默认保存6次对话，即12条消息.
   - 对话内容比较长时，默认保存4次对话，即8条消息.
   - 对话内容超过3072个token时或者以上两种情况，移除最开始一条消息.
+- 隐藏视图时无法自动打开视图
 
 ## [0.0.3] - 2023-05-29
 
