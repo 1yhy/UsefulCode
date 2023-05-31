@@ -1,52 +1,52 @@
-import * as vscode from 'vscode';
-import { callOpenAI } from './openai';
-const CONFIG_SECTION = 'UsefulCode';
+import * as vscode from 'vscode'
+import { callOpenAI } from './openai'
+const CONFIG_SECTION = 'UsefulCode'
 
 export function activate(context: vscode.ExtensionContext) {
 
 
-	const provider = new ChatViewProvider(context.extensionUri);
+	const provider = new ChatViewProvider(context.extensionUri)
 
 
 	// 注册 Webview 视图提供程序
 	context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider('useful_code_sidebar-view', provider,{
+		vscode.window.registerWebviewViewProvider('useful_code_sidebar-view', provider, {
 			webviewOptions: {
 				retainContextWhenHidden: true,
 			},
 		})
-	);
+	)
 
 
 	// 右键菜单命令 -- 查看代码问题
 	context.subscriptions.push(
 		vscode.commands.registerCommand("UsefulCode.FindProblemsOfCode", async () => {
-			console.log('111');
-			const editor = vscode.window.activeTextEditor;
-			const selection = editor?.selection;
-			const text = editor?.document.getText(selection) || '';
-			provider.postMessage('请你帮我看一下这段代码可能存在的问题\n' + text);
-		}));
+			const editor = vscode.window.activeTextEditor
+			const selection = editor?.selection
+			const text = editor?.document.getText(selection) || ''
+			provider.postMessage('请你帮我看一下这段代码可能存在的问题以及给出修改问题之后的代码\n' + text)
+
+		}))
 
 
 	// 右键菜单命令 -- 优化代码
 	context.subscriptions.push(
 		vscode.commands.registerCommand("UsefulCode.OptimizeCode", async () => {
-			const editor = vscode.window.activeTextEditor;
-			const selection = editor?.selection;
-			const text = editor?.document.getText(selection) || '';
-			provider.postMessage('请你帮我优化一下这段代码\n' + text);
-		}));
+			const editor = vscode.window.activeTextEditor
+			const selection = editor?.selection
+			const text = editor?.document.getText(selection) || ''
+			provider.postMessage('请你帮我优化一下这段代码\n' + text)
+		}))
 
 
 	// 右键菜单命令 -- 解释代码
 	context.subscriptions.push(
 		vscode.commands.registerCommand("UsefulCode.ExplainCode", async () => {
-			const editor = vscode.window.activeTextEditor;
-			const selection = editor?.selection;
-			const text = editor?.document.getText(selection) || '';
-			provider.postMessage('请你帮解释一下这段代码\n' + text);
-		}));
+			const editor = vscode.window.activeTextEditor
+			const selection = editor?.selection
+			const text = editor?.document.getText(selection) || ''
+			provider.postMessage('请你帮解释一下这段代码\n' + text)
+		}))
 
 	// 输入token命令
 	context.subscriptions.push(
@@ -54,80 +54,92 @@ export function activate(context: vscode.ExtensionContext) {
 			const userToken = await vscode.window.showInputBox({
 				prompt: 'Enter your OpenAI API token',
 				placeHolder: 'Token'
-			});
+			})
 
 			if (userToken) {
 				// 保存用户的Token
-				saveToken(userToken);
-				vscode.window.showInformationMessage('设置Token成功');
+				saveToken(userToken)
+				vscode.window.showInformationMessage('设置Token成功')
 			}
 		})
-	);
+	)
 }
 
 function saveToken(token: string) {
-	const config = vscode.workspace.getConfiguration(CONFIG_SECTION);
-	config.update('token', token, vscode.ConfigurationTarget.Global);
+	const config = vscode.workspace.getConfiguration(CONFIG_SECTION)
+	config.update('token', token, vscode.ConfigurationTarget.Global)
 }
 
 
 
 class ChatViewProvider implements vscode.WebviewViewProvider {
-	public _view?: vscode.WebviewView;
+	public _view?: vscode.WebviewView
+	private leftOverMessage?: any
+
+
 
 	constructor(
 		private readonly _extensionUri: vscode.Uri,
 	) { }
 
 	public resolveWebviewView(webviewView: vscode.WebviewView) {
-		this._view = webviewView;
+		this._view = webviewView
 
 		// 设置 Webview 的 HTML 内容
-		webviewView.webview.html = this.getWebviewContent(webviewView.webview);
+		webviewView.webview.html = this.getWebviewContent(webviewView.webview)
 		webviewView.webview.options = {
 			enableScripts: true,
 			localResourceRoots: [
-        this._extensionUri
-      ], // 允许访问其他本地资源，并定义加载本地内容的根 URI
-		};
+				this._extensionUri
+			], // 允许访问其他本地资源，并定义加载本地内容的根 URI
+		}
 		// 处理 Webview 的消息和事件
 		webviewView.webview.onDidReceiveMessage(async message => {
-			console.log(message);
+			console.log(message)
 			// 处理来自 Webview 的消息
 			if (message.type === 'message' || message.type === 'askQuestion') {
-				const res = await callOpenAI(message.value);
-				// vscode.window.showInformationMessage();
+				const token = vscode.workspace.getConfiguration('UsefulCode').token
+				if (!token) {
+					vscode.window.showErrorMessage('请先设置OpenAI的Token')
+					return
+				}
+				const res = await callOpenAI(message.value, token)
 				// 处理收到的消息
-				if(res) {
-					console.log(res);
-					const responseMessage = `${res.content}`;
+				if (res) {
+					console.log(res)
+					const responseMessage = `${res.content}`
 					// 发送响应消息给 Webview
-					webviewView?.webview.postMessage({ type: 'response', value: responseMessage });
+					webviewView?.webview.postMessage({ type: 'response', value: responseMessage })
 				}
 			}
-		});
+		})
+
+		if (this.leftOverMessage) {
+			webviewView?.webview.postMessage(this.leftOverMessage)
+		}
 
 	}
 
 	public postMessage(message: string) {
-		console.log(message, this._view);
-		// 处理 Webview 的消息和事件
 		if (this._view) {
-			if(!this._view.visible) this._view.show(true);
-			this._view.webview?.postMessage({ type: 'askQuestion', value: message });
+			this._view.webview?.postMessage({ type: 'askQuestion', value: message })
+		} else {
+			vscode.commands.executeCommand('useful_code_sidebar-view.focus')
+			this.leftOverMessage = { type: 'askQuestion', value: message }
 		}
+		// 处理 Webview 的消息和事件
 	}
 
 	private getWebviewContent(webview: vscode.Webview): string {
-		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
-		const promptScriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'prompt.json'));
+		const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'))
+		const promptScriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'prompt.json'))
 
 		// Do the same for the stylesheet.
-		const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'));
-		const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'));
-		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'));
+		const styleResetUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'reset.css'))
+		const styleVSCodeUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'vscode.css'))
+		const styleMainUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.css'))
 
-		const nonce = getNonce();
+		const nonce = getNonce()
 		return `
 			<!DOCTYPE html>
 			<html lang="en">
@@ -157,7 +169,7 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
 							<script nonce="${nonce}" src="${scriptUri}"></script>
 					</body>
 					</html>
-			`;
+			`
 	}
 
 
@@ -165,12 +177,12 @@ class ChatViewProvider implements vscode.WebviewViewProvider {
 
 
 function getNonce() {
-	let text = '';
-	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+	let text = ''
+	const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 	for (let i = 0; i < 32; i++) {
-		text += possible.charAt(Math.floor(Math.random() * possible.length));
+		text += possible.charAt(Math.floor(Math.random() * possible.length))
 	}
-	return text;
+	return text
 }
 
 

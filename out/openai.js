@@ -5,25 +5,10 @@ const vscode = require("vscode");
 const axios_1 = require("axios");
 const gpt_3_encoder_1 = require("gpt-3-encoder");
 const messages = [];
-async function callOpenAI(text) {
-    const token = vscode.workspace.getConfiguration('UsefulCode').token;
-    if (!token) {
-        vscode.window.showErrorMessage('请先设置OpenAI的Token');
-        return;
-    }
+async function callOpenAI(text, token) {
     try {
-        messages.push({ "role": "user", "content": text });
-        const str = messages.map(m => m.content).join('\n');
-        const encodedLength = countTokens(str);
-        if (encodedLength > 4000 && messages.length == 1) {
-            vscode.window.showErrorMessage('输入的文本过长');
-            return;
-        }
-        // 限制最多12条消息，最多3072个token 或者 8条消息且最多3072个token
-        if ((messages.length > 8 && encodedLength > 3072) || encodedLength > 3072 || messages.length > 12) {
-            messages.shift();
-        }
-        console.log(messages, encodedLength);
+        // 获取发送消息上下文
+        getMessages(text);
         const response = await axios_1.default.post('https://api.openai.com/v1/chat/completions', {
             model: "gpt-3.5-turbo",
             messages: messages,
@@ -49,6 +34,19 @@ async function callOpenAI(text) {
     }
 }
 exports.callOpenAI = callOpenAI;
+function getMessages(text) {
+    messages.push({ "role": "user", "content": text });
+    const str = messages.map(m => m.content).join('\n');
+    const encodedLength = countTokens(str);
+    if (encodedLength > 4000 && messages.length == 1) {
+        vscode.window.showErrorMessage('输入的文本过长');
+        return;
+    }
+    // 限制最多12条消息，最多3072个token 或者 8条消息且最多3072个token
+    if ((messages.length > 8 && encodedLength > 3072) || encodedLength > 3072 || messages.length > 12) {
+        messages.shift();
+    }
+}
 // 计算token数量
 function countTokens(text) {
     return (0, gpt_3_encoder_1.encode)(text).length;

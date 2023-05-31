@@ -1,9 +1,9 @@
 ;(function () {
   const vscode = acquireVsCodeApi()
-  var chatMessagesElement = document.getElementById('chatMessages')
-  var messageInput = document.getElementById('messageInput')
-  var sendButton = document.getElementById('sendButton')
-  var positionBox = document.getElementById('position')
+  const chatMessagesElement = document.getElementById('chatMessages')
+  const messageInput = document.getElementById('messageInput')
+  const sendButton = document.getElementById('sendButton')
+  const positionBox = document.getElementById('position')
 
   // 添加prompt提示
   const ul = document.createElement('ul')

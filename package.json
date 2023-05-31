@@ -6,6 +6,7 @@
   "publisher": "yhy",
   "icon": "assets/icon.png",
   "activationEvents": [
+    "onStartupFinished"
   ],
   "main": "./out/extension.js",
   "keywords": [
@@ -14,7 +15,7 @@
     "ChatGPT",
     "OpenAI",
     "UsefulCode",
-    "gpt3.5",
+    "gpt3.5"
   ],
   "license": "MIT",
   "repository": {

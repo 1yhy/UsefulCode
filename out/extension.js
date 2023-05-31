@@ -14,11 +14,10 @@ function activate(context) {
     }));
     // 右键菜单命令 -- 查看代码问题
     context.subscriptions.push(vscode.commands.registerCommand("UsefulCode.FindProblemsOfCode", async () => {
-        console.log('111');
         const editor = vscode.window.activeTextEditor;
         const selection = editor?.selection;
         const text = editor?.document.getText(selection) || '';
-        provider.postMessage('请你帮我看一下这段代码可能存在的问题\n' + text);
+        provider.postMessage('请你帮我看一下这段代码可能存在的问题以及给出修改问题之后的代码\n' + text);
     }));
     // 右键菜单命令 -- 优化代码
     context.subscriptions.push(vscode.commands.registerCommand("UsefulCode.OptimizeCode", async () => {
@@ -71,8 +70,12 @@ class ChatViewProvider {
             console.log(message);
             // 处理来自 Webview 的消息
             if (message.type === 'message' || message.type === 'askQuestion') {
-                const res = await (0, openai_1.callOpenAI)(message.value);
-                // vscode.window.showInformationMessage();
+                const token = vscode.workspace.getConfiguration('UsefulCode').token;
+                if (!token) {
+                    vscode.window.showErrorMessage('请先设置OpenAI的Token');
+                    return;
+                }
+                const res = await (0, openai_1.callOpenAI)(message.value, token);
                 // 处理收到的消息
                 if (res) {
                     console.log(res);
@@ -82,15 +85,19 @@ class ChatViewProvider {
                 }
             }
         });
+        if (this.leftOverMessage) {
+            webviewView?.webview.postMessage(this.leftOverMessage);
+        }
     }
     postMessage(message) {
-        console.log(message, this._view);
-        // 处理 Webview 的消息和事件
         if (this._view) {
-            if (!this._view.visible)
-                this._view.show(true);
             this._view.webview?.postMessage({ type: 'askQuestion', value: message });
         }
+        else {
+            vscode.commands.executeCommand('useful_code_sidebar-view.focus');
+            this.leftOverMessage = { type: 'askQuestion', value: message };
+        }
+        // 处理 Webview 的消息和事件
     }
     getWebviewContent(webview) {
         const scriptUri = webview.asWebviewUri(vscode.Uri.joinPath(this._extensionUri, 'media', 'main.js'));
